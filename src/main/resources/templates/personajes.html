@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!-- 
+  xmlns:th → Namespace de Thymeleaf, permite usar th:text, th:each, th:src, etc.
+  xmlns:sec → Namespace de Spring Security, permite mostrar contenido según autenticación o roles.
+-->
+<head>
+<title>Personajes Dragon Ball</title>
+<link rel="stylesheet" th:href="@{/css/stylepersonajes.css}">
+</head>
+
+<body>
+	<!-- =======================
+     Navbar
+     ======================= -->
+	<nav class="navbar">
+		<div class="navbar-container">
+			<a href="/" class="logo">Dragon Ball DB</a>
+			<ul class="nav-links">
+				<!-- Solo usuarios logueados -->
+				<li sec:authorize="isAuthenticated()"><span><strong
+						th:text="${#authentication.name}"></strong></span> <a
+					th:href="@{/logout}">Cerrar Sesión</a></li>
+				<!-- Solo usuarios no autenticados -->
+				<li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar
+						Sesión</a></li>
+				<li><a href="/vista/personajesweb">Personajes</a></li>
+				<li><a href="/vista/favoritos">Favoritos</a></li>
+				<li><a href="#">Acerca de</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- =======================
+     Cards de Personajes
+     ======================= -->
+	<div class="container">
+		<!-- Iteramos la lista de personajes desde el controller -->
+		<div class="card" th:each="p : ${personajes}">
+			<div class="card-image">
+				<img th:src="${p.image}" alt="Imagen de personaje" />
+			</div>
+			<div class="card-data">
+				<div class="card-info">
+					<h3 th:text="${p.name}"></h3>
+					<p>
+						<strong>Race - Gender:</strong> <span
+							th:text="${p.race + ' - ' + p.gender}"></span>
+					</p>
+					<p>
+						<strong>Base KI:</strong> <span th:text="${p.ki}"></span>
+					</p>
+					<p>
+						<strong>Total KI:</strong> <span th:text="${p.maxKi}"></span>
+					</p>
+					<p>
+						<strong>Affiliation:</strong> <span th:text="${p.affiliation}"></span>
+					</p>
+				</div>
+				<div class="card-buttons">
+					<!-- Corazón solo para usuarios autenticados -->
+					<span sec:authorize="isAuthenticated()" class="corazon"
+						th:data-id="${p.id}"
+						th:text="${favoritosIds.contains(p.id) ? '❤️' : '🤍'}"> </span> 
+						<a th:href="@{/vista/personajesweb/{id}(id=${p.id})} "class="btn-detalle">Más información</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- =======================
+     Script para Favoritos
+     ======================= -->
+	<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.corazon').forEach(corazon => {
+        corazon.addEventListener('click', function() {
+            const personajeId = this.getAttribute('data-id');
+            if (!personajeId) return;
+
+            // Determina si ya es favorito
+            const esFavorito = this.textContent === '❤️';
+            const url = esFavorito
+                ? `/favorito/quitar/${personajeId}`
+                : `/favorito/agregar/${personajeId}`;
+
+            fetch(url, { method: 'GET' }) // Nota: idealmente POST para seguridad
+                .then(response => {
+                    if (response.ok) {
+                        this.textContent = esFavorito ? '🤍' : '❤️';
+                    } else {
+                        console.error('Error en la petición');
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    });
+});
+</script>
+
+</body>
+</html>

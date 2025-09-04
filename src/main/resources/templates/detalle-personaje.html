@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!-- 
+  Detalle de un personaje Dragon Ball
+  - th:text y th:src son de Thymeleaf
+  - sec: namespace se usaría si quisieras mostrar contenido según roles/autenticación
+-->
+<head>
+    <title th:text="${personaje.name} + ' - Dragon Ball'">Detalle Personaje</title>
+    <style>
+        /* =======================
+           Estilos generales
+           ======================= */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto; /* Centrado vertical y horizontal */
+        }
+
+        /* =======================
+           Card
+           ======================= */
+        .card {
+            background-color: #2c2f36;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-image {
+            background: radial-gradient(circle, #ffffff 60%, #cccccc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card-image img {
+            width: 70%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .card-data {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Espacio entre párrafos y título */
+        }
+
+        .card-data h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #f1c40f;
+        }
+
+        .card-data p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .card-data p strong {
+            display: inline-block;
+            width: 120px; /* Etiqueta fija para alinear valores */
+            color: #f1c40f;
+        }
+
+        /* Botón de volver */
+        .btn-back {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #f1c40f;
+            color: #2c2f36;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #d4ac0d;
+        }
+
+        /* =======================
+           Responsivo
+           ======================= */
+        @media (max-width: 600px) {
+            .card-image img {
+                width: 90%;
+            }
+            .card-data h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Imagen del personaje -->
+            <div class="card-image">
+                <img th:src="${personaje.image}" alt="Imagen del personaje"/>
+                <!-- Consejo: alt dinámico sería mejor, p.ej alt="${personaje.name}" -->
+            </div>
+
+            <!-- Datos del personaje -->
+            <div class="card-data">
+                <h2 th:text="${personaje.name}"></h2>
+
+                <p><strong>Race:</strong> <span th:text="${personaje.race}"></span></p>
+                <p><strong>Gender:</strong> <span th:text="${personaje.gender}"></span></p>
+                <p><strong>Base KI:</strong> <span th:text="${personaje.ki}"></span></p>
+                <p><strong>Total KI:</strong> <span th:text="${personaje.maxKi}"></span></p>
+                <p><strong>Affiliation:</strong> <span th:text="${personaje.affiliation}"></span></p>
+                <p><strong>Description:</strong> <span th:text="${personaje.description}"></span></p>
+
+                <!-- Botón para volver a la lista -->
+                <a th:href="@{/vista/personajesweb}" class="btn-back">Volver a personajes</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
