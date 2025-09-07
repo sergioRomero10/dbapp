@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro de Usuarios</title>
-    <!-- Enlaza un CSS externo para mantener estilos separados -->
-    <link rel="stylesheet" th:href="@{/css/styleregistesandlogin.css}">
+<meta charset="UTF-8">
+<title>Registro de Usuarios</title>
+<!-- Enlaza un CSS externo para mantener estilos separados -->
+<link rel="stylesheet" th:href="@{/css/styleregistesandlogin.css}">
 </head>
 <body>
-    <div class="form-container">
-        <h2>Registro de Usuario</h2>
+	<div class="form-container">
+		<h2>Registro de Usuario</h2>
 
-        <!-- =======================
+		<!-- =======================
              Formulario de registro
-             =======================
-             - action apunta al endpoint que procesa el registro (POST /register)
-             - name debe coincidir con los campos del modelo Usuario
-             - required asegura que el campo no pueda estar vacío
-        -->
-        <form action="/register" method="post">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" name="username" required>
+             ======================= -->
+		<form action="/register" method="post">
+			<label for="username">Usuario</label> <input type="text"
+				id="username" name="username" required> <label
+				for="password">Contraseña</label>
+			<div class="password-container">
+				<input type="password" id="password" name="password" required>
+				<span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+			</div>
 
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
+			<label for="passwordConfirm">Repite la contraseña</label>
+			<div class="password-container">
+				<input type="password" id="passwordConfirm" name="passwordConfirm"
+					required> <span class="toggle-password"
+					onclick="togglePassword('passwordConfirm')">👁️</span>
+			</div>
 
-            <button type="submit">Registrar</button>
-        </form>
+			<!-- Mensajes de feedback -->
+			<div th:if="${errorMessage}" class="alert alert-error"
+				th:text="${errorMessage}"></div>
+			<div th:if="${successMessage}" class="alert alert-success"
+				th:text="${successMessage}"></div>
 
-        <!-- =======================
+			<button type="submit">Registrar</button>
+		</form>
+
+
+		<!-- =======================
              Mensaje de éxito
-             =======================
-             - th:if evalúa si existe successMessage en el modelo
-             - th:text inyecta el contenido dinámico
-        -->
-        <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
-    </div>
+             ======================= -->
+		<div th:if="${successMessage}" class="success"
+			th:text="${successMessage}"></div>
+	</div>
 
-    <!-- =======================
-         Consejos de buenas prácticas
-         =======================
-         1. CSRF: Spring Security incluye protección CSRF; si el formulario es POST, agregar:
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-         2. Validaciones: considera usar validaciones del lado servidor con @Valid y BindingResult.
-         3. Feedback de errores: mostrar mensajes si el username ya existe o la contraseña no cumple reglas.
-         4. Separar CSS: ya lo haces con styleregistesandlogin.css, ideal para mantenimiento futuro.
-         5. Seguridad: nunca mostrar contraseñas en texto plano; usar siempre PasswordEncoder (ya lo tienes con BCryptPasswordEncoder).
-    -->
+	<!-- =======================
+         Script para mostrar/ocultar contraseña
+         ======================= -->
+	<script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+    </script>
 </body>
 </html>

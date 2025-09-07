@@ -52,6 +52,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
                 .map(Usuario::getId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
     }
+    boolean existsByUsername(String username);
 
     /**
      * Buenas prácticas futuras:

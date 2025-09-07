@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.com.model.Usuario;
 import com.example.demo.com.service.UsuarioService;
@@ -56,11 +57,29 @@ public class UsuarioFormController {
      * @return Redirige al mismo formulario con parámetro ?success
      */
     @PostMapping("")
-    public String procesarRegistro(@ModelAttribute Usuario usuario) {
-        // Llamar al Service para guardar el usuario en la BD
-        usuarioService.registrarUsuario(usuario);
+    public String procesarRegistro(
+            @ModelAttribute Usuario usuario,
+            @RequestParam("passwordConfirm") String passwordConfirm,
+            RedirectAttributes redirectAttributes) {
+        if (usuarioService.existsByUsername(usuario.getUsername())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "El nombre de usuario ya está en uso.");
+            return "redirect:/register";
+        }
 
-        // Redirige con query param para mostrar mensaje de éxito
-        return "redirect:/register?success";
+        // Validar que coincidan las contraseñas
+        if (!usuario.getPassword().equals(passwordConfirm)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Las contraseñas no coinciden.");
+            return "redirect:/register";
+        }
+
+        // Validar que el usuario no exista
+   
+        // Registrar usuario si pasa validaciones
+        usuarioService.registrarUsuario(usuario);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Usuario registrado con éxito. ¡Ahora puedes iniciar sesión!");
+
+        return "redirect:/login";
     }
+
 }

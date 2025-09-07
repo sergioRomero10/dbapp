@@ -40,7 +40,7 @@ label {
 }
 
 input {
-    width: 100%;
+    width: 93%;
     padding: 10px;
     margin-top: 5px;
     border-radius: 6px;
@@ -90,4 +90,61 @@ button:hover {
 
 .form-container form a:hover {
     color: #ffffff;
+}
+/* Estilos generales para alertas */
+.alert {
+    margin-top: 15px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Alerta de error */
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.9);
+    color: #fff;
+    border: 1px solid #c0392b;
+    box-shadow: 0 2px 6px rgba(192, 57, 43, 0.3);
+}
+
+/* Alerta de éxito */
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.9);
+    color: #fff;
+    border: 1px solid #27ae60;
+    box-shadow: 0 2px 6px rgba(39, 174, 96, 0.3);
+}
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 35px; /* espacio para el icono */
+    box-sizing: border-box; /* evita que el padding haga que el input sobresalga */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+    color: #ccc;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #f1c40f;
 }

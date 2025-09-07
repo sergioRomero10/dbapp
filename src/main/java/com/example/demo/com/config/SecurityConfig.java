@@ -73,7 +73,11 @@ public class SecurityConfig {
             )
 
             // 🔹 Configuración de logout
-            .logout(logout -> logout.permitAll());
+            .logout(logout -> logout
+                    .logoutUrl("/logout")   // la URL que usas en Thymeleaf
+                    .logoutSuccessUrl("/vista/personajesweb") // <-- aquí la redirección
+                    .permitAll()
+                );
 
         return http.build();
     }
