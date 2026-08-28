@@ -52,4 +52,55 @@ public class UsuarioServiceTest {
 	    assertTrue(resultado);
 	}
 	
+	@Test
+	void esFavorito_devuelveFalse_siElPersonajeNoEstaEnFavoritos() {
+	    // ARRANGE
+	    Personaje personaje = new Personaje(5L, "Goku", "60000000", "90000000",
+	            "Saiyan", "Male", "desc", "img.png", "Z Fighter", null);
+
+	    Usuario usuario = new Usuario();
+	    usuario.setUsername("sergio");
+	    usuario.setFavoritos(new HashSet<>(Set.of(personaje)));
+
+	    when(usuarioRepository.findByUsername("sergio")).thenReturn(Optional.of(usuario));
+
+	    // ACT
+	    boolean resultado = usuarioService.esFavorito("sergio", 1L);
+
+	    // ASSERT
+	    assertFalse(resultado);
+	}
+	
+	
+	@Test
+	void esFavorito_lanzaExcepcion_siUsuarioNoExiste() {
+	    // ARRANGE
+	    when(usuarioRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
+
+	    // ACT + ASSERT (van juntos porque estamos comprobando que algo lance una excepción)
+	    assertThrows(RuntimeException.class, () ->
+	        usuarioService.esFavorito("noexiste", 1L));
+	}
+	
+	@Test
+	void registrarUsuario_ciframContrasenaYGuardaElUsuario() {
+	    // ARRANGE
+	    Usuario usuario = new Usuario();
+	    usuario.setUsername("Sergio");
+	    usuario.setPassword("Pruebacontra");
+
+	    when(passwordEncoder.encode("Pruebacontra")).thenReturn("hash_falso_123");
+	    when(usuarioRepository.save(usuario)).thenReturn(usuario);
+
+	    // ACT
+	    Usuario resultado = usuarioService.registrarUsuario(usuario);
+
+	    // ASSERT
+	    verify(passwordEncoder).encode("Pruebacontra");
+	    verify(usuarioRepository).save(usuario);
+	    assertEquals("hash_falso_123", usuario.getPassword());
+	    assertEquals(usuario, resultado);
+	}
+	
+	
 }
