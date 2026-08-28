@@ -25,21 +25,6 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
-    /**
-     * Configura el AuthenticationManager usando nuestro UserDetailsService y el PasswordEncoder.
-     * 
-     * AuthenticationManager es responsable de autenticar usuarios con Spring Security.
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService) // integra nuestra lógica de carga de usuarios
-                .passwordEncoder(passwordEncoder())      // aplica hash al comparar contraseñas
-                .and()
-                .build();
-    }
-
     /**
      * Configura las reglas de seguridad HTTP.
      */
