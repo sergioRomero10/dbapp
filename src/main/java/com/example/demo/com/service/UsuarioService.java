@@ -30,6 +30,10 @@ public class UsuarioService {
     }
 
     public Usuario registrarUsuario(Usuario usuario) {
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            throw new RuntimeException("La contraseña no puede estar vacía");
+        }
+
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);
     }
