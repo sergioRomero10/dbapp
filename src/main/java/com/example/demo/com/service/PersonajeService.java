@@ -14,20 +14,20 @@ import com.example.demo.com.repository.PersonajeRepository;
  *
  * En Spring Boot, existen dos formas principales de consumir APIs externas:
  * 
- * 1️⃣ RestTemplate
+ * 1️ RestTemplate
  * - Es el cliente HTTP tradicional de Spring.
  * - Bloqueante: la llamada HTTP espera a que la respuesta llegue antes de continuar.
  * - Fácil de usar y suficiente para aplicaciones simples o proyectos pequeños.
  * - A partir de Spring 5, RestTemplate está en **mantenimiento**, es decir, se sigue usando pero no se recomienda para nuevos proyectos.
  *
- * 2️⃣ WebClient
+ * 2️ WebClient
  * - Introducido en Spring 5 como parte de Spring WebFlux.
  * - No bloqueante (reactivo): permite manejar muchas solicitudes concurrentes sin bloquear hilos.
  * - Integración con Mono/Flux para programación reactiva.
  * - Mejor rendimiento en aplicaciones con muchas llamadas externas o APIs de alto tráfico.
  * - Permite timeout, retry, filtros y manejo de errores de forma más flexible.
  *
- * 💡 Recomendación:
+ * 
  * - Para proyectos simples, RestTemplate sigue funcionando bien.
  * - Para proyectos modernos o de producción, especialmente con muchas llamadas externas o microservicios, usar WebClient.
  * - WebClient también se puede usar en aplicaciones tradicionales (Spring MVC) sin necesidad de WebFlux completo.
@@ -59,7 +59,7 @@ public class PersonajeService {
     private final PersonajeRepository personajeRepository;
 
     // RestTemplate para consumir APIs externas (Dragon Ball API)
-    private final RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
 
     // URL base de la API de Dragon Ball
     private static final String API_URL = "https://dragonball-api.com/api/characters?limit=10";
@@ -67,8 +67,9 @@ public class PersonajeService {
     /**
      * Constructor con inyección de dependencias de Spring
      */
-    public PersonajeService(PersonajeRepository personajeRepository) {
+    public PersonajeService(PersonajeRepository personajeRepository, RestTemplate restTemplate) {
         this.personajeRepository = personajeRepository;
+        this.restTemplate = restTemplate;
     }
 
     /**
