@@ -27,11 +27,9 @@ public class Personaje {
     /**
      * Identificador único del personaje
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include // Incluir solo ID en equals/hashCode
-    private Long id;
-
+	@Id
+	@EqualsAndHashCode.Include
+	private Long id;
     /**
      * Nombre del personaje
      */
