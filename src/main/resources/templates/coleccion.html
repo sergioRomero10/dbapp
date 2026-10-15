@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi colección - Dragon Ball DB</title>
+
+<link rel="stylesheet" th:href="@{/css/stylepersonajes.css}">
+<link rel="stylesheet" th:href="@{/css/stylesobres.css}">
+<link rel="stylesheet" th:href="@{/css/stylecoleccion.css}">
+</head>
+
+<body>
+
+	<!-- =======================
+         Navbar
+         ======================= -->
+
+	<nav class="navbar">
+		<div class="navbar-container">
+
+			<a href="/" class="logo">Dragon Ball DB</a>
+
+			<ul class="nav-links">
+
+				<li sec:authorize="isAuthenticated()"><span> <strong
+						th:text="${#authentication.name}"></strong>
+				</span> <a th:href="@{/logout}"> Cerrar Sesión </a></li>
+
+				<li><a href="/vista/personajesweb"> Personajes </a></li>
+
+				<li><a href="/vista/favoritos"> Favoritos </a></li>
+
+				<li><a href="/vista/sobres"> 🎁 Abrir sobre </a></li>
+
+				<li class="active"><a href="/vista/coleccion"> 🐉 Colección </a></li>
+
+				<li><a href="#"> Acerca de </a></li>
+
+			</ul>
+
+		</div>
+	</nav>
+
+
+	<main class="coleccion-container">
+
+		<h1>🐉 Mi colección</h1>
+
+		<p class="sobre-description">
+			Has conseguido <strong th:text="${totalObtenidas}">12</strong> de <strong
+				th:text="${cartas.size()}">58</strong> guerreros. ¡Abre sobres para
+			completar el álbum!
+		</p>
+
+
+		<!-- =======================
+             Filtros por rareza
+             ======================= -->
+
+		<div class="filtros" id="filtros">
+			<button type="button" class="filtro activo" data-rareza="todas">
+				Todas <span th:text="${totalObtenidas} + '/' + ${cartas.size()}">12/58</span>
+			</button>
+
+			<button type="button" th:each="r : ${resumenes}"
+				th:class="'filtro rareza-' + ${r.rareza.css}"
+				th:data-rareza="${r.rareza.css}">
+				<span class="punto"></span> <span th:text="${r.rareza.nombre}">Común</span>
+				<span th:text="${r.obtenidas} + '/' + ${r.total}">3/30</span>
+			</button>
+
+			<label class="solo-faltan"> <input type="checkbox"
+				id="solo-faltan"> Solo las que me faltan
+			</label>
+		</div>
+
+
+		<!-- =======================
+             Álbum
+             ======================= -->
+
+		<div class="album" id="album">
+
+			<a th:each="c : ${cartas}"
+				th:href="${c.obtenida} ? @{/vista/personajesweb/{id}(id=${c.personaje.id})} : null"
+				th:class="'carta-album rareza-' + ${c.rareza.css} + (${c.obtenida} ? '' : ' bloqueada')"
+				th:data-rareza="${c.rareza.css}"
+				th:data-obtenida="${c.obtenida}">
+
+				<span class="carta-rareza" th:text="${c.rareza.nombre}">Común</span>
+
+				<div class="carta-album-imagen">
+					<img th:src="${c.personaje.image}" th:alt="${c.personaje.name}"
+						loading="lazy" />
+					<span class="candado" th:unless="${c.obtenida}">?</span>
+				</div>
+
+				<h3 th:text="${c.personaje.name}">Goku</h3>
+			</a>
+
+		</div>
+
+		<p class="album-vacio" id="album-vacio" hidden>¡Enhorabuena! No te
+			falta ninguna carta de esta rareza.</p>
+
+	</main>
+
+	<script th:src="@{/js/coleccion.js}"></script>
+
+</body>
+</html>

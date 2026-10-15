@@ -210,6 +210,12 @@
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 	min-width: 220px;
 	text-align: left;
+	text-decoration: none;
+	transition: transform 0.15s ease;
+}
+
+.progreso:hover {
+	transform: translateY(-2px);
 }
 
 .progreso-texto {

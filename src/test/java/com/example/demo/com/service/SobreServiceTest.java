@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.demo.com.model.CartaColeccion;
 import com.example.demo.com.model.Personaje;
 import com.example.demo.com.model.Rareza;
 import com.example.demo.com.model.ResultadoSobre;
@@ -122,6 +123,21 @@ class SobreServiceTest {
 
 		assertThrows(IllegalStateException.class, () -> sobreService.abrirSobre("goku"));
 		assertEquals(1000, usuario.getMonedas());
+	}
+
+	@Test
+	void obtenerColeccion_devuelveTodasLasCartasOrdenadasPorRarezaYMarcaLasObtenidas() {
+		usuario.getColeccion().add(personajes.get(0)); // P1, común
+		when(usuarioRepository.findByUsernameWithColeccion("goku")).thenReturn(Optional.of(usuario));
+		when(personajeRepository.findAll()).thenReturn(personajes);
+
+		List<CartaColeccion> album = sobreService.obtenerColeccion("goku");
+
+		assertEquals(10, album.size());
+		assertEquals(Rareza.LEGENDARIA, album.get(0).rareza());
+		assertEquals(Rareza.COMUN, album.get(9).rareza());
+		assertEquals(1, album.stream().filter(CartaColeccion::obtenida).count());
+		assertTrue(album.get(9).obtenida()); // P1 es el común más débil: va el último
 	}
 
 	@Test

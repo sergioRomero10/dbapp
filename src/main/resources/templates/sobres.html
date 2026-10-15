@@ -35,6 +35,8 @@
 				<li class="active"><a href="/vista/sobres"> 🎁 Abrir sobre
 				</a></li>
 
+				<li><a href="/vista/coleccion"> 🐉 Colección </a></li>
+
 				<li><a href="#"> Acerca de </a></li>
 
 			</ul>
@@ -60,7 +62,7 @@
 			</div>
 
 			<!-- Progreso de la colección -->
-			<div class="progreso">
+			<a class="progreso" th:href="@{/vista/coleccion}" title="Ver mi colección">
 				<div class="progreso-texto">
 					🐉 Colección <strong
 						th:text="${estado.enColeccion} + ' / ' + ${estado.totalPersonajes}">0 / 58</strong>
@@ -69,7 +71,7 @@
 					<div class="progreso-relleno"
 						th:style="'width:' + ${estado.porcentajeColeccion()} + '%'"></div>
 				</div>
-			</div>
+			</a>
 		</div>
 
 		<p class="sin-monedas" th:if="${error}" th:text="'❌ ' + ${error}"></p>

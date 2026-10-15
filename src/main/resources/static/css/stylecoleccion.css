@@ -1,0 +1,181 @@
+@charset "UTF-8";
+/* stylecoleccion.css: álbum de colección.
+   Los colores --rareza y .carta-rareza vienen de stylesobres.css */
+
+.coleccion-container {
+	max-width: 1100px;
+	margin: 40px auto;
+	padding: 0 16px;
+	text-align: center;
+}
+
+/* =======================
+   Filtros
+   ======================= */
+.filtros {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 30px;
+}
+
+.filtro {
+	--rareza: #f1c40f;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 16px;
+	background: #2c2f36;
+	color: #fff;
+	border: 2px solid transparent;
+	border-radius: 30px;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.filtro:hover {
+	transform: translateY(-2px);
+}
+
+.filtro.activo {
+	border-color: var(--rareza);
+	box-shadow: 0 0 12px var(--rareza);
+}
+
+.filtro span:last-child {
+	color: #999;
+	font-weight: normal;
+}
+
+.filtro .punto {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--rareza);
+}
+
+.solo-faltan {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+	color: #555;
+	cursor: pointer;
+}
+
+/* =======================
+   Álbum
+   ======================= */
+.album {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap: 18px;
+}
+
+.carta-album {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 12px;
+	background: linear-gradient(170deg, #2c2f36, #16181c);
+	border: 3px solid var(--rareza);
+	border-radius: 14px;
+	color: #fff;
+	text-decoration: none;
+	box-shadow: 0 0 14px -4px var(--rareza);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	animation: aparecerCarta 0.4s ease both;
+}
+
+/* display:flex anula el atributo hidden si no se fuerza */
+.carta-album[hidden] {
+	display: none;
+}
+
+.carta-album:not(.bloqueada):hover {
+	transform: translateY(-5px) rotate(-1deg);
+	box-shadow: 0 0 26px var(--rareza);
+}
+
+.carta-album .carta-rareza {
+	align-self: flex-start;
+	font-size: 10px;
+}
+
+.carta-album-imagen {
+	position: relative;
+	width: 100%;
+	height: 170px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.carta-album-imagen img {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	filter: drop-shadow(0 0 8px var(--rareza));
+}
+
+.carta-album h3 {
+	margin: 0;
+	font-size: 15px;
+	color: var(--rareza);
+	text-align: center;
+}
+
+/* =======================
+   Cartas que faltan: blanco y negro + silueta negra
+   ======================= */
+.carta-album.bloqueada {
+	filter: grayscale(1);
+	opacity: 0.75;
+	cursor: default;
+	box-shadow: none;
+}
+
+.carta-album.bloqueada .carta-album-imagen img {
+	/* brightness(0) pinta en negro todos los píxeles opacos: queda solo la silueta */
+	filter: brightness(0) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+}
+
+.carta-album.bloqueada h3 {
+	color: #888;
+}
+
+.candado {
+	position: absolute;
+	font-size: 46px;
+	font-weight: 800;
+	color: rgba(255, 255, 255, 0.85);
+	text-shadow: 0 0 10px #000;
+}
+
+.album-vacio {
+	color: #555;
+	font-weight: bold;
+	margin-top: 20px;
+}
+
+@keyframes aparecerCarta {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+}
+
+@media (max-width: 600px) {
+	.album {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+	.carta-album-imagen {
+		height: 130px;
+	}
+}

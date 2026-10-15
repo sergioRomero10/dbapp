@@ -10,6 +10,7 @@ import java.util.random.RandomGenerator;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.com.model.CartaColeccion;
 import com.example.demo.com.model.EstadoSobres;
 import com.example.demo.com.model.Personaje;
 import com.example.demo.com.model.Rareza;
@@ -83,6 +84,21 @@ public class SobreService {
         Usuario usuario = usuarioRepository.findByUsernameWithColeccion(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return new EstadoSobres(usuario.getMonedas(), usuario.getColeccion().size(), personajeRepository.count());
+    }
+
+    /**
+     * Álbum completo: todos los personajes ordenados de Legendaria a Común
+     * (y de más a menos poderoso dentro de cada rareza), marcando cuáles tiene el usuario.
+     */
+    @Transactional
+    public List<CartaColeccion> obtenerColeccion(String username) {
+        Usuario usuario = usuarioRepository.findByUsernameWithColeccion(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<CartaColeccion> album = new ArrayList<>();
+        agruparPorRareza(personajeRepository.findAll()).forEach((rareza, personajes) ->
+                personajes.forEach(p -> album.add(new CartaColeccion(p, rareza, usuario.getColeccion().contains(p)))));
+        return album;
     }
 
     /**
