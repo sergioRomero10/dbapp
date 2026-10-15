@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.com.model.Personaje;
-import com.example.demo.com.model.Usuario;
 import com.example.demo.com.service.PersonajeService;
 import com.example.demo.com.service.UsuarioService;
 
@@ -99,6 +98,4 @@ public class PersonajeWebController {
 
 	    return "personajes"; // reutilizas la misma plantilla
 	}
-
-
 }

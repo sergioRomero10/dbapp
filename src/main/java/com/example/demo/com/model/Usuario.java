@@ -61,11 +61,15 @@ public class Usuario {
     )
     private Set<Personaje> favoritos = new HashSet<>();
 
-    /**
-     * Buenas prácticas futuras:
-     * 1️⃣ Agregar validaciones de campo (@NotBlank, @Size) si usas DTOs.
-     * 2️⃣ Configurar la contraseña con hash (BCrypt) antes de persistir.
-     * 3️⃣ Considerar relaciones bidireccionales solo si realmente las necesitas para evitar carga innecesaria de colecciones.
-     * 4️⃣ Lazy loading en ManyToMany para mejorar rendimiento.
-     */
+    
+    @Column(nullable = false)
+    private Integer monedas = 1000;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "usuario_coleccion",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "personaje_id")
+    )
+    private Set<Personaje> coleccion = new HashSet<>();
 }

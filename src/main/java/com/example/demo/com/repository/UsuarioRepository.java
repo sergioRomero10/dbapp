@@ -42,6 +42,17 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsernameWithFavoritos(@Param("username") String username);
 
     /**
+     * Buscar un usuario por username cargando también su colección de personajes (sobres).
+     */
+    @Query("""
+           select u
+           from Usuario u
+           left join fetch u.coleccion
+           where u.username = :username
+           """)
+    Optional<Usuario> findByUsernameWithColeccion(@Param("username") String username);
+
+    /**
      * Obtener solo el ID del usuario por username.
      * 
      * - Utiliza findByUsername() y extrae el ID.

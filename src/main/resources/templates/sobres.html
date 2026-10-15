@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abrir Sobre - Dragon Ball DB</title>
+
+<link rel="stylesheet" th:href="@{/css/stylepersonajes.css}">
+<link rel="stylesheet" th:href="@{/css/stylesobres.css}">
+</head>
+
+<body>
+
+	<!-- =======================
+         Navbar
+         ======================= -->
+
+	<nav class="navbar">
+		<div class="navbar-container">
+
+			<a href="/" class="logo">Dragon Ball DB</a>
+
+			<ul class="nav-links">
+
+				<li sec:authorize="isAuthenticated()"><span> <strong
+						th:text="${#authentication.name}"></strong>
+				</span> <a th:href="@{/logout}"> Cerrar Sesión </a></li>
+
+				<li><a href="/vista/personajesweb"> Personajes </a></li>
+
+				<li><a href="/vista/favoritos"> Favoritos </a></li>
+
+				<li class="active"><a href="/vista/sobres"> 🎁 Abrir sobre
+				</a></li>
+
+				<li><a href="#"> Acerca de </a></li>
+
+			</ul>
+
+		</div>
+	</nav>
+
+
+	<!-- =======================
+         Contenido
+         ======================= -->
+
+	<main class="sobre-container">
+
+		<h1>🎁 Abrir sobre</h1>
+
+		<p class="sobre-description">¡Abre un sobre y consigue un nuevo
+			personaje para tu colección!</p>
+
+		<div class="marcadores">
+			<div class="monedas">
+				🪙 <span th:text="${estado.monedas}">1000</span> monedas
+			</div>
+
+			<!-- Progreso de la colección -->
+			<div class="progreso">
+				<div class="progreso-texto">
+					🐉 Colección <strong
+						th:text="${estado.enColeccion} + ' / ' + ${estado.totalPersonajes}">0 / 58</strong>
+				</div>
+				<div class="progreso-barra">
+					<div class="progreso-relleno"
+						th:style="'width:' + ${estado.porcentajeColeccion()} + '%'"></div>
+				</div>
+			</div>
+		</div>
+
+		<p class="sin-monedas" th:if="${error}" th:text="'❌ ' + ${error}"></p>
+
+
+		<!-- =======================
+             Sobre
+             ======================= -->
+
+		<div class="sobre-card">
+
+			<div class="sobre-imagen">
+				<div class="sobre" id="sobre">
+					<div class="sobre-esfera">★</div>
+					<div class="sobre-logo">
+						DRAGON<br> BALL
+					</div>
+					<div class="sobre-texto">SOBRE</div>
+				</div>
+			</div>
+
+
+			<div class="sobre-info">
+
+				<h2>Sobre básico</h2>
+
+				<p>Contiene un personaje aleatorio. Cuanto más poderoso, más
+					difícil de conseguir.</p>
+
+				<div class="precio">
+					🪙 <span th:text="${precio}">100</span> monedas
+				</div>
+
+				<form id="form-abrir" th:action="@{/vista/sobres/abrir}"
+					method="post">
+					<button type="submit" class="btn-abrir"
+						th:disabled="${estado.monedas < precio}">🎁 ABRIR SOBRE</button>
+				</form>
+
+				<p class="sin-monedas" th:if="${estado.monedas < precio}">❌ No
+					tienes suficientes monedas.</p>
+
+				<!-- Probabilidades: transparencia tipo gacha -->
+				<ul class="probabilidades">
+					<li th:each="r : ${rarezas}" th:class="'rareza-' + ${r.css}">
+						<span class="punto"></span> <span th:text="${r.nombre}">Común</span>
+						<strong th:text="${r.peso} + '%'">55%</strong>
+						<small th:text="'repetido +' + ${r.reembolso}">repetido +20</small>
+					</li>
+				</ul>
+
+			</div>
+
+		</div>
+
+	</main>
+
+
+	<!-- =======================
+         Revelación del personaje
+         ======================= -->
+
+	<div th:if="${resultado}" id="revelacion"
+		th:class="'revelacion rareza-' + ${resultado.rareza.css}">
+
+		<div class="rayos"></div>
+		<div class="particulas" id="particulas"></div>
+
+		<div class="carta" id="carta" title="Pulsa para revelar">
+			<div class="carta-cara carta-dorso">
+				<div class="dorso-esfera">★</div>
+				<span>Pulsa para revelar</span>
+			</div>
+
+			<div class="carta-cara carta-frente">
+				<div class="carta-rareza" th:text="${resultado.rareza.nombre}">Legendaria</div>
+				<div class="carta-imagen">
+					<img th:src="${resultado.personaje.image}"
+						th:alt="${resultado.personaje.name}" />
+				</div>
+				<h2 th:text="${resultado.personaje.name}">Goku</h2>
+				<p class="carta-datos">
+					<span th:text="${resultado.personaje.race}">Saiyan</span> · Ki
+					máx. <span th:text="${resultado.personaje.maxKi}">90 Septillion</span>
+				</p>
+			</div>
+		</div>
+
+		<div class="revelacion-pie">
+			<p class="etiqueta-nuevo" th:unless="${resultado.repetido}">✨
+				¡Nuevo en tu colección!</p>
+			<p class="etiqueta-repetido" th:if="${resultado.repetido}">
+				🔁 Repetido · +<span th:text="${resultado.reembolso}">20</span>
+				monedas devueltas
+			</p>
+
+			<div class="revelacion-botones">
+				<button type="button" class="btn-secundario" id="btn-cerrar">Continuar</button>
+				<button type="submit" form="form-abrir" class="btn-abrir"
+					th:disabled="${estado.monedas < precio}">🎁 Abrir otro</button>
+			</div>
+		</div>
+	</div>
+
+	<script th:src="@{/js/sobres.js}"></script>
+
+</body>
+</html>
