@@ -1,0 +1,67 @@
+services:
+
+  db:
+
+    image: postgres:18
+
+    container_name: dragonball-db-dev
+
+    environment:
+
+      POSTGRES_DB: dragonball
+
+      POSTGRES_USER: postgres
+
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+
+      - "5432:5432"
+
+    volumes:
+
+      - postgres_data_dev:/var/lib/postgresql
+
+
+  app:
+
+    build:
+
+      context: .
+
+      dockerfile: Dockerfile.dev
+
+    container_name: dragonball-app-dev
+
+    depends_on:
+
+      - db
+
+    environment:
+
+      DB_USER: postgres
+
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dragonball
+
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+
+    ports:
+
+      - "9090:9090"
+
+    volumes:
+
+      - ./src:/app/src
+
+      - ./pom.xml:/app/pom.xml
+
+      - ./.mvn:/app/.mvn
+
+      - ./mvnw:/app/mvnw
+
+
+volumes:
+
+  postgres_data_dev:
