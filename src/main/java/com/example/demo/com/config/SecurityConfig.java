@@ -1,6 +1,7 @@
 package com.example.demo.com.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,14 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    /**
+     * Webs que pueden mostrar la app dentro de un iframe (p. ej. el portfolio).
+     * Se configura con la propiedad app.frame-ancestors (separadas por espacios).
+     */
+    @Value("${app.frame-ancestors:http://localhost:8099}")
+    private String frameAncestors;
+
     /**
      * Configura las reglas de seguridad HTTP.
      */
@@ -33,6 +42,14 @@ public class SecurityConfig {
         http
             // 🔹 Desactiva CSRF temporalmente (útil para pruebas, en producción revisar)
             .csrf(csrf -> csrf.disable())
+
+            // 🔹 Permite mostrar la app en un iframe solo desde la propia app y el portfolio.
+            //    Por defecto Spring Security envía X-Frame-Options: DENY y lo bloquea todo.
+            .headers(headers -> headers
+                    .frameOptions(frame -> frame.disable())
+                    .contentSecurityPolicy(csp -> csp
+                            .policyDirectives("frame-ancestors 'self' " + frameAncestors))
+            )
 
             // 🔹 Autorización de rutas
             .authorizeHttpRequests(auth -> auth
